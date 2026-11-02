@@ -1,11 +1,6 @@
--- Учебная БД: сеть продуктовых магазинов (ClickHouse)
--- 7 измерений + 3 факта: продажи, поставки, утилизация
 DROP DATABASE IF EXISTS retail_dw SYNC;
 CREATE DATABASE retail_dw;
 
--- ================= ИЗМЕРЕНИЯ =================
-
--- ЧТО: товары (+ КБЖУ на 100 г и срок годности)
 CREATE TABLE retail_dw.dim_goods
 (
     sku_id             UInt32,
@@ -26,7 +21,6 @@ CREATE TABLE retail_dw.dim_goods
 ENGINE = MergeTree
 ORDER BY sku_id;
 
--- КОМУ: клиенты
 CREATE TABLE retail_dw.dim_client
 (
     client_id   UInt32,
@@ -40,7 +34,6 @@ CREATE TABLE retail_dw.dim_client
 ENGINE = MergeTree
 ORDER BY client_id;
 
--- ГДЕ: магазины (куда везём / где продаём / где списываем)
 CREATE TABLE retail_dw.dim_shop
 (
     shop_id   UInt8,
@@ -54,7 +47,6 @@ CREATE TABLE retail_dw.dim_shop
 ENGINE = MergeTree
 ORDER BY shop_id;
 
--- КОГДА: календарь 2024
 CREATE TABLE retail_dw.dim_date
 (
     date_key     Date,
@@ -71,7 +63,6 @@ CREATE TABLE retail_dw.dim_date
 ENGINE = MergeTree
 ORDER BY date_key;
 
--- ОТКУДА: поставщики
 CREATE TABLE retail_dw.dim_supplier
 (
     supplier_id   UInt16,
@@ -83,7 +74,6 @@ CREATE TABLE retail_dw.dim_supplier
 ENGINE = MergeTree
 ORDER BY supplier_id;
 
--- КАК ПРИВЕЗЛИ: транспорт
 CREATE TABLE retail_dw.dim_transport
 (
     transport_id    UInt8,
@@ -96,7 +86,6 @@ CREATE TABLE retail_dw.dim_transport
 ENGINE = MergeTree
 ORDER BY transport_id;
 
--- ПОЧЕМУ СПИСАЛИ: причины утилизации
 CREATE TABLE retail_dw.dim_writeoff_reason
 (
     reason_id         UInt8,
@@ -107,9 +96,6 @@ CREATE TABLE retail_dw.dim_writeoff_reason
 ENGINE = MergeTree
 ORDER BY reason_id;
 
--- ================= ФАКТЫ =================
-
--- Продажи: одна строка = одна строка чека
 CREATE TABLE retail_dw.fact_receipt
 (
     receipt_line_id UInt64,
@@ -125,7 +111,6 @@ CREATE TABLE retail_dw.fact_receipt
 ENGINE = MergeTree
 ORDER BY (sold_at, shop_id, sku_id);
 
--- Поставки: одна строка = одна партия товара, привезённая в магазин
 CREATE TABLE retail_dw.fact_supply
 (
     supply_id      UInt64,
@@ -143,7 +128,6 @@ CREATE TABLE retail_dw.fact_supply
 ENGINE = MergeTree
 ORDER BY (delivered_at, shop_id, sku_id);
 
--- Утилизация: одна строка = одно списание товара из партии
 CREATE TABLE retail_dw.fact_writeoff
 (
     writeoff_id    UInt64,

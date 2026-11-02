@@ -1,4 +1,3 @@
-"""Smoke-тест DuckDB: те же CSV из data/raw, что грузятся в ClickHouse."""
 from pathlib import Path
 import duckdb
 
