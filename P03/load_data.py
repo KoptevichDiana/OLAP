@@ -1,25 +1,21 @@
-"""
-З03. Загрузка CSV из data/raw/ в DuckDB + проверки.
-Сеть продуктовых магазинов, 6 таблиц (5 измерений + 1 факт).
-
-Запуск из папки P03/:
-    python load_data.py
-
-Что делает:
-  1) sql/ddl_duckdb.sql  — удаляет и заново создаёт таблицы (пустые);
-  2) sql/load_duckdb.sql — грузит CSV;
-  3) checks.sql          — выполняет проверки;
-  всё печатает на экран и сохраняет в checks.txt.
-
-Повторный запуск не удваивает факт: таблицы каждый раз создаются пустыми.
-"""
 from pathlib import Path
 import duckdb
 
 DB = "retail.duckdb"
 RAW = Path("data/raw")
-TABLES = ["dim_goods", "dim_client", "dim_shop", "dim_pay_method",
-          "dim_calendar", "fact_receipt_line"]
+FILES = ["dim_goods", "dim_client", "dim_shop", "dim_date", "dim_supplier",
+         "dim_transport", "dim_writeoff_reason",
+         "fact_receipt", "fact_supply", "fact_writeoff"]
+TABLES = ["dim_supplier", "dim_goods", "dim_client", "dim_shop", "dim_calendar",
+          "dim_pay_method", "dim_transport", "dim_writeoff_reason",
+          "fact_receipt_line", "fact_supply", "fact_writeoff"]
+CHECKS = ["1. Строк в таблицах и в CSV (должно совпадать)",
+          "2. Пустые ключи в фактах (должно быть 0)",
+          "3. Даты без пары в календаре (должно быть 0)",
+          "4. Главные суммы и проверка арифметики (bad_rows = 0)",
+          "5. Списания совпадают с партией поставки (должно быть 0)",
+          "6. Продажи по способам оплаты",
+          "7. Период данных"]
 
 log = []
 
@@ -30,9 +26,9 @@ def say(text=""):
 
 
 def main():
-    for f in ("dim_goods.csv", "dim_client.csv", "fact_receipt.csv"):
-        if not (RAW / f).exists():
-            raise SystemExit(f"Нет файла {RAW / f}. Скопируйте CSV из P01/data/raw/")
+    for f in FILES:
+        if not (RAW / f"{f}.csv").exists():
+            raise SystemExit(f"Нет файла {RAW / f}.csv. Скопируйте CSV из P01/data/raw/")
 
     con = duckdb.connect(DB)
 
@@ -42,18 +38,13 @@ def main():
     say("2) Грузим CSV (sql/load_duckdb.sql) ...")
     con.execute(Path("sql/load_duckdb.sql").read_text(encoding="utf-8")).fetchall()
     for t in TABLES:
-        n = con.execute(f"SELECT COUNT(*) FROM {t}").fetchall()[0][0]  # fetchall закрывает результат (нужно для DuckDB 2.0)
-        say(f"   {t:<18} {n:>8,} rows")
+        n = con.execute(f"SELECT COUNT(*) FROM {t}").fetchall()[0][0]
+        say(f"   {t:<20} {n:>8,} rows")
 
     say()
     say("3) Проверки (checks.sql)")
-    text = Path("checks.sql").read_text(encoding="utf-8")
-    for block in text.split(";"):
-        lines = block.strip().splitlines()
-        sql = "\n".join(l for l in lines if not l.strip().startswith("--")).strip()
-        if not sql:
-            continue
-        title = next((l for l in lines if l.startswith("-- ") and l[3:4].isdigit()), "")
+    queries = [q.strip() for q in Path("checks.sql").read_text(encoding="utf-8").split(";") if q.strip()]
+    for title, sql in zip(CHECKS, queries):
         say()
         say(title)
         say(str(con.sql(sql)))
