@@ -1,10 +1,3 @@
-"""
-З06. Создаёт dim_goods_scd2 и прогоняет демо смены отдела у товара.
-Работает на базе из P05 (../P05/retail.duckdb), вывод сохраняет в scd2_output.txt.
-
-Запуск из папки P06/ (сначала должен быть выполнен P05/etl/load_data.py):
-    python run_scd2.py
-"""
 from pathlib import Path
 import duckdb
 
