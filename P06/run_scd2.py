@@ -1,7 +1,8 @@
 from pathlib import Path
 import duckdb
 
-DB = Path("../P05/retail.duckdb")
+ROOT = Path(__file__).resolve().parent
+DB = ROOT.parent / "P05" / "retail.duckdb"
 
 if not DB.exists():
     raise SystemExit(f"Нет базы {DB}. Сначала запустите P05/etl/load_data.py")
@@ -22,9 +23,9 @@ def table(rel):
 con = duckdb.connect(str(DB))
 log = []
 
-con.execute(Path("sql/ddl_scd2.sql").read_text(encoding="utf-8"))
+con.execute((ROOT / "sql/ddl_scd2.sql").read_text(encoding="utf-8"))
 
-text = Path("sql/demo_scd2.sql").read_text(encoding="utf-8")
+text = (ROOT / "sql/demo_scd2.sql").read_text(encoding="utf-8")
 for block in text.split(";"):
     lines = block.strip().splitlines()
     sql = "\n".join(l for l in lines if not l.strip().startswith("--")).strip()
@@ -41,5 +42,5 @@ for block in text.split(";"):
 con.close()
 out = "\n".join(log)
 print(out)
-Path("scd2_output.txt").write_text(out + "\n", encoding="utf-8")
+(ROOT / "scd2_output.txt").write_text(out + "\n", encoding="utf-8")
 print("Вывод сохранён в scd2_output.txt")
