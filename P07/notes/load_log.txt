@@ -1,0 +1,42 @@
+Команда: python3 etl/load_all.py all --twice
+Источник: P05/retail.duckdb
+
+===== LOAD 1 =====
+--- group: sales ---
+dim_supplier            DuckDB=300     ClickHouse=300     OK
+dim_goods               DuckDB=25000   ClickHouse=25000   OK
+dim_client              DuckDB=25000   ClickHouse=25000   OK
+dim_shop                DuckDB=12      ClickHouse=12      OK
+dim_calendar            DuckDB=366     ClickHouse=366     OK
+dim_pay_method          DuckDB=4       ClickHouse=4       OK
+fact_receipt_line       DuckDB=25000   ClickHouse=25000   OK
+--- group: logistics ---
+dim_transport           DuckDB=6       ClickHouse=6       OK
+fact_supply             DuckDB=25000   ClickHouse=25000   OK
+--- group: writeoffs ---
+dim_writeoff_reason     DuckDB=6       ClickHouse=6       OK
+fact_writeoff           DuckDB=3002    ClickHouse=3002    OK
+revenue:       DuckDB=15383068.36; ClickHouse=15383068.36; OK
+supply_cost:   DuckDB=12542717.29; ClickHouse=12542717.29; OK
+writeoff_cost: DuckDB=425223.01; ClickHouse=425223.01; OK
+
+===== LOAD 2 =====
+--- group: sales ---
+dim_supplier            DuckDB=300     ClickHouse=300     OK
+dim_goods               DuckDB=25000   ClickHouse=25000   OK
+dim_client              DuckDB=25000   ClickHouse=25000   OK
+dim_shop                DuckDB=12      ClickHouse=12      OK
+dim_calendar            DuckDB=366     ClickHouse=366     OK
+dim_pay_method          DuckDB=4       ClickHouse=4       OK
+fact_receipt_line       DuckDB=25000   ClickHouse=25000   OK
+--- group: logistics ---
+dim_transport           DuckDB=6       ClickHouse=6       OK
+fact_supply             DuckDB=25000   ClickHouse=25000   OK
+--- group: writeoffs ---
+dim_writeoff_reason     DuckDB=6       ClickHouse=6       OK
+fact_writeoff           DuckDB=3002    ClickHouse=3002    OK
+revenue:       DuckDB=15383068.36; ClickHouse=15383068.36; OK
+supply_cost:   DuckDB=12542717.29; ClickHouse=12542717.29; OK
+writeoff_cost: DuckDB=425223.01; ClickHouse=425223.01; OK
+
+Done. Проверка завершена.
