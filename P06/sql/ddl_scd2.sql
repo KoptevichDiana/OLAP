@@ -18,3 +18,4 @@ CREATE TABLE dim_goods_scd2 (
     valid_to      DATE NOT NULL,
     is_current    BOOLEAN NOT NULL
 );
+
