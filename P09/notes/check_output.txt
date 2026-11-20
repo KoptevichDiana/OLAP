@@ -1,0 +1,11 @@
+source	lines_cnt	revenue
+summary	25000	15383068.36
+detail	25000	15383068.36
+source	revenue_march
+detail	1301424.98
+summary	1301424.98
+source	revenue_march_shop1
+detail	117764.29
+summary	117764.29
+summary_rows
+4369

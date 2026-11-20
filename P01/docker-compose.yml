@@ -2,6 +2,8 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:24.12
     container_name: olap_clickhouse
+    environment:
+      CLICKHOUSE_SKIP_USER_SETUP: 1
     ports:
       - "8123:8123"
       - "9000:9000"
