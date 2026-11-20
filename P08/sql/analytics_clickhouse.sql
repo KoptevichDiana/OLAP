@@ -68,3 +68,24 @@ FROM by_dept AS d
 INNER JOIN supply AS s ON s.dept = d.dept
 WHERE d.rn = 1
 ORDER BY d.writeoff_cost DESC;
+
+-- 4. P04: время доставки и доля закупки по видам транспорта.
+SELECT
+    t.transport_name,
+    t.is_refrigerated,
+    count() AS supplies_cnt,
+    round(avg(dateDiff('minute', f.shipped_at, f.delivered_at)) / 60.0, 1) AS avg_delivery_hours,
+    sum(f.supply_amount) AS supply_cost,
+    round(100.0 * sum(f.supply_amount) / sum(sum(f.supply_amount)) OVER (), 2) AS supply_share_pct
+FROM olap.fact_supply AS f
+INNER JOIN olap.dim_transport AS t ON t.transport_id = f.transport_id
+GROUP BY t.transport_id, t.transport_name, t.is_refrigerated
+ORDER BY avg_delivery_hours DESC;
+
+-- 5. P04: какая часть закупки везётся в холодильнике.
+SELECT
+    sumIf(f.supply_amount, t.is_refrigerated) AS refrigerated_cost,
+    sum(f.supply_amount) AS supply_cost,
+    round(100.0 * sumIf(f.supply_amount, t.is_refrigerated) / sum(f.supply_amount), 2) AS refrigerated_share_pct
+FROM olap.fact_supply AS f
+INNER JOIN olap.dim_transport AS t ON t.transport_id = f.transport_id;

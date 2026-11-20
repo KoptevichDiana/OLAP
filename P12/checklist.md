@@ -6,7 +6,7 @@
 - [x] Модель «звезда» + паспорт предметной области (`P02/star.png`, `P04/passport.md`)
 - [x] ELT: воспроизводимый скрипт загрузки и проверок (`P05/etl/load_data.py`, `P07/etl/load_all.py`)
 - [x] SCD2 на одном измерении (`P06`, `dim_goods`)
-- [x] Набор аналитических SQL с оконными функциями (`P04/sql/analytics.sql`, `P08/sql/analytics_clickhouse.sql`)
+- [x] Набор аналитических SQL с оконными функциями: 3 бизнес-вопроса + эталон в DuckDB и ClickHouse (`P04/sql/analytics.sql`, `P08/sql/analytics_clickhouse.sql`)
 - [x] Сводная таблица под график со сверкой (`P09`, `sales_by_shop_day`)
 - [x] Дашборд Metabase над ClickHouse, 3 виджета на SQL + фильтр «Период» (`P10`)
 - [x] Одна бизнес-метрика: SQL = карточка (`P11/notes/z11.md`)
